@@ -45,7 +45,7 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    LoginByUsername ({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
@@ -60,14 +60,14 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    GetUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
-            reject('error')
-          }
+        getUserInfo().then(response => {
+          // if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
+          //   reject('error')
+          // }
           const data = response.data
-
+          console.log(data)
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
           } else {
@@ -99,7 +99,7 @@ const user = {
     // },
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut ({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
@@ -113,7 +113,7 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut ({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
@@ -122,7 +122,7 @@ const user = {
     },
 
     // 动态修改权限
-    ChangeRoles({ commit, dispatch }, role) {
+    ChangeRoles ({ commit, dispatch }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
         setToken(role)

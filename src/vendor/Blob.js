@@ -24,7 +24,7 @@
     try {
       new Blob;
       return;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // Internally we use a BlobBuilder implementation to base Blob off of
@@ -34,10 +34,10 @@
       get_class = function (object) {
         return Object.prototype.toString.call(object).match(/^\[object\s(.*)\]$/)[1];
       },
-      FakeBlobBuilder = function BlobBuilder() {
+      FakeBlobBuilder = function BlobBuilder () {
         this.data = [];
       },
-      FakeBlob = function Blob(data, type, encoding) {
+      FakeBlob = function Blob (data, type, encoding) {
         this.data = data;
         this.size = data.length;
         this.type = type;
@@ -99,7 +99,7 @@
         real_revoke_object_URL.call(real_URL, object_URL);
       }
     };
-    FBB_proto.append = function (data /*, endings*/ ) {
+    FBB_proto.append = function (data /*, endings*/) {
       var bb = this.data;
       // decode data to a binary string
       if (Uint8Array && (data instanceof ArrayBuffer || data instanceof Uint8Array)) {
@@ -163,7 +163,7 @@
     return FakeBlobBuilder;
   }(view));
 
-  view.Blob = function Blob(blobParts, options) {
+  view.Blob = function Blob (blobParts, options) {
     var type = options ? (options.type || "") : "";
     var builder = new BlobBuilder();
     if (blobParts) {
