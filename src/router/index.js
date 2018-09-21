@@ -11,7 +11,7 @@ import Layout from '@/views/layout/Layout'
 // import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
-
+import authRouter from './modules/auth'
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  **/
@@ -71,7 +71,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        meta: { title: 'dashboard', icon: '404', noCache: true }
       }
     ]
   }
@@ -160,7 +160,7 @@ export const asyncRouterMap = [
   // chartsRouter,
   // nestedRouter,
   tableRouter,
-
+  authRouter,
   // {
   //   path: '/example',
   //   component: Layout,
