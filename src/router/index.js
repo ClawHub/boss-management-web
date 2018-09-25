@@ -71,7 +71,45 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: '404', noCache: true }
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'blog',
+    children: [
+      {
+        path: 'blog',
+        component: () => import('@/views/blog/index'),
+        name: 'Blog',
+        meta: { title: 'blog', icon: 'blog', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/picture',
+    component: Layout,
+    redirect: 'list',
+    name: 'picture',
+    meta: {
+      title: 'picture',
+      icon: 'picture', 
+      noCache: true
+    },
+    children: [
+      {
+        path: 'upload',
+        component: () => import('@/views/picture/upload/index'),
+        name: 'Upload',
+        meta: { title: 'upload' }
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/picture/list/index'),
+        name: 'List',
+        meta: { title: 'list' }
       }
     ]
   }

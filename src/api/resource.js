@@ -7,6 +7,14 @@ export function fetchTree () {
   })
 }
 
+export function addResource (data) {
+  return request({
+    url: '/resource/add',
+    method: 'post',
+    data
+  })
+}
+
 export function fetchArticle (id) {
   return request({
     url: '/article/detail',
@@ -23,13 +31,6 @@ export function fetchPv (pv) {
   })
 }
 
-export function createArticle (data) {
-  return request({
-    url: '/article/create',
-    method: 'post',
-    data
-  })
-}
 
 export function updateArticle (data) {
   return request({
