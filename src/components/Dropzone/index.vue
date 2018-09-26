@@ -31,7 +31,7 @@ export default {
     },
     acceptedFiles: {
       type: String,
-      default: ''
+      default: 'image/*'
     },
     thumbnailHeight: {
       type: Number,
@@ -51,7 +51,7 @@ export default {
     },
     maxFiles: {
       type: Number,
-      default: 3
+      default: 5
     },
     autoProcessQueue: {
       type: Boolean,
@@ -91,6 +91,9 @@ export default {
     const element = document.getElementById(this.id)
     const vm = this
     this.dropzone = new Dropzone(element, {
+      headers: {
+        'Authorization':this.$store.getters.token
+      },
       clickable: this.clickable,
       thumbnailWidth: this.thumbnailWidth,
       thumbnailHeight: this.thumbnailHeight,
@@ -129,7 +132,8 @@ export default {
       accept: (file, done) => {
         console.log('accept file' + JSON.stringify(file))
         /* 七牛*/
-        // const token = this.$store.getters.token;
+        const token = this.$store.getters.token;
+        console.log('token'+token)
         // getToken(token).then(response => {
         //   file.token = response.data.qiniu_token;
         //   file.key = response.data.qiniu_key;
