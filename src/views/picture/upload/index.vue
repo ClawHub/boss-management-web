@@ -1,6 +1,6 @@
 <template>
-  <div  class="components-container">
-    <dropzone id="myVueDropzone" url="https://httpbin.org/post" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"/>
+  <div class="components-container">
+    <dropzone id="myVueDropzone" url="http://172.16.9.44:9000/common/picBed/upload" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"/>
   </div>
 </template>
 
@@ -10,11 +10,11 @@ export default {
   name: 'Upload',
   components: { Dropzone },
   methods: {
-    dropzoneS(file) {
+    dropzoneS (file) {
       console.log(file)
       this.$message({ message: 'Upload success!', type: 'success' })
     },
-    dropzoneR(file) {
+    dropzoneR (file) {
       console.log(file)
       this.$message({ message: 'Delete success', type: 'success' })
     }
