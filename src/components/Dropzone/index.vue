@@ -92,7 +92,7 @@ export default {
     const vm = this
     this.dropzone = new Dropzone(element, {
       headers: {
-        'Authorization':this.$store.getters.token
+        'Authorization': this.$store.getters.token
       },
       clickable: this.clickable,
       thumbnailWidth: this.thumbnailWidth,
@@ -130,10 +130,8 @@ export default {
         }
       },
       accept: (file, done) => {
-        console.log('accept file' + JSON.stringify(file))
         /* 七牛*/
         const token = this.$store.getters.token;
-        console.log('token'+token)
         // getToken(token).then(response => {
         //   file.token = response.data.qiniu_token;
         //   file.key = response.data.qiniu_key;
@@ -143,9 +141,6 @@ export default {
         done()
       },
       sending: (file, xhr, formData) => {
-        console.log('sending file' + JSON.stringify(file))
-        console.log('sending xhr' + JSON.stringify(xhr))
-        console.log('sending formData' + JSON.stringify(formData))
         // formData.append('token', file.token);
         // formData.append('key', file.key);
         vm.initOnce = false

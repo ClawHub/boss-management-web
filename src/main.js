@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 // require styles
 import 'swiper/dist/css/swiper.css'
+import Preview from 'vue-preview'
 
 import '@/styles/index.scss' // global css
 
@@ -25,6 +26,17 @@ import './mock' // simulation data
 import * as filters from './filters' // global filters
 
 Vue.use(VueAwesomeSwiper)
+
+Vue.use(Preview, {
+  mainClass: 'pswp--minimal--dark',
+  barsSize: { top: 0, bottom: 0 },
+  captionEl: true,
+  fullscreenEl: true,
+  shareEl: false,
+  bgOpacity: 0.85,
+  tapToClose: true,
+  tapToToggleControls: false
+})
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

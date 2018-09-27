@@ -11,7 +11,7 @@ export default {
   components: { Dropzone },
   methods: {
     dropzoneS (file) {
-      console.log(file)
+      console.log(JSON.parse(file.xhr.responseText).data)
       this.$message({ message: 'Upload success!', type: 'success' })
     },
     dropzoneR (file) {
