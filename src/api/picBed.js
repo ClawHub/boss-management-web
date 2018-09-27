@@ -6,4 +6,11 @@ export function fetchPic (classify) {
     method: 'get'
   })
 }
+export function upload (data) {
+  return request({
+    url: '/picBed/upload',
+    method: 'post',
+    data
+  })
+}
 
