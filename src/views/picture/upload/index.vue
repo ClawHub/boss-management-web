@@ -1,6 +1,6 @@
 <template>
   <div class="components-container">
-    <dropzone id="myVueDropzone" url="http://localhost:9002/boss/picBed/upload" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"/>
+    <dropzone id="myVueDropzone" url="http://192.144.192.190:9002/boss/picBed/upload" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"/>
   </div>
 </template>
 
