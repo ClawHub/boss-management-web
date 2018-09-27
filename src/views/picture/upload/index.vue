@@ -1,22 +1,46 @@
 <template>
-  <div class="components-container">
-    <dropzone id="myVueDropzone" url="http://192.144.192.190:9002/boss/picBed/upload" @dropzone-removedFile="dropzoneR" @dropzone-success="dropzoneS"/>
+  <div class="hello">    
+    <picture-input 
+      ref="pictureInput"
+      width="200" 
+      height="200"
+      crop ="false"
+      margin="16" 
+      removable ="true"
+      accept="image/jpeg,image/png" 
+      size="10" 
+      button-class="btn btn-primary button"
+      :custom-strings="{
+        upload: '<h1>Bummer!</h1>',
+        drag: 'Drag a 😺 GIF or GTFO'
+      }"
+      @change="onChange">
+    </picture-input>
   </div>
 </template>
 
 <script>
-import Dropzone from '@/components/Dropzone'
+import PictureInput from 'vue-picture-input'
+
 export default {
   name: 'Upload',
-  components: { Dropzone },
+  data () {
+    return {
+    }
+  },
+  components: {
+    PictureInput
+  },
   methods: {
-    dropzoneS (file) {
-      console.log(JSON.parse(file.xhr.responseText).data)
-      this.$message({ message: 'Upload success!', type: 'success' })
-    },
-    dropzoneR (file) {
-      console.log(file)
-      this.$message({ message: 'Delete success', type: 'success' })
+    onChange (image) {
+      console.log('New picture selected!')
+      if (image) {
+        console.log('Picture loaded.')
+        this.image = image
+        console.log(image)
+      } else {
+        console.log('FileReader API not supported: use the <form>, Luke!')
+      }
     }
   }
 }
