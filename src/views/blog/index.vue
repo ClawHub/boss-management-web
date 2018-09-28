@@ -3,7 +3,7 @@
    
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
       <sticky :class-name="'sub-navbar '+postForm.status">
-        <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">发布</el-button>
+        <el-button v-loading="loading" style="margin-left: 10px;width: 100%;" type="success" @click="submitForm">发布</el-button>
       </sticky>
       <el-row :gutter="8">
         <el-col :span="12">
