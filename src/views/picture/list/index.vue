@@ -1,118 +1,48 @@
 <template>
+<div>
   <div  class="components-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('table.classify')" v-model="listQuery.classify" style="width: 200px;" class="filter-item" @keyup.enter.native="getPic"/>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">{{ $t('table.search') }}</el-button>
-    </div>
-    <div class="one">
-      <h5>Gallery one</h5>
-      <vue-preview :slides="slide1" @close="handleClose"></vue-preview>
+      <el-row :gutter="10" style="margin-top:10px;">
+        <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
+          <el-input :placeholder="$t('table.tags')" v-model="listQuery.tags" style="width: 50%;" class="filter-item" @keyup.enter.native="getPic"/>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">{{ $t('table.search') }}</el-button>
+        </el-col>
+      </el-row>
     </div>
   </div>
+  <vue-preview :slides="slides" @close="handleClose"></vue-preview>
+  <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
+  <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
+  <el-tooltip placement="top" content="tooltip">
+    <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="50" transition-name="fade"/>
+  </el-tooltip>
+</div>
 </template>
 
 <script>
 import waves from '@/directive/waves' // 水波纹指令
 import { fetchPic } from '@/api/picBed'
+import BackToTop from '@/components/BackToTop'
 export default {
   name: 'View',
+  components: { BackToTop },
   directives: {
     waves
   },
   data () {
     return {
-      slide1: [
-        {
-          src: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_b.jpg',
-          msrc: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_m.jpg',
-          alt: 'picture1',
-          title: 'Image Caption 1',
-          w: 600,
-          h: 400
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_b.jpg',
-          msrc: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_m.jpg',
-          alt: 'picture1',
-          title: 'Image Caption 1',
-          w: 600,
-          h: 400
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3894/15008518202_b016d7d289_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3894/15008518202_b016d7d289_m.jpg',
-          alt: 'picture1',
-          title: 'Image Caption 1',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3920/15008465772_383e697089_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3920/15008465772_383e697089_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_b.jpg',
-          msrc: 'https://farm6.staticflickr.com/5591/15008867125_68a8ed88cc_m.jpg',
-          alt: 'picture1',
-          title: 'Image Caption 1',
-          w: 600,
-          h: 400
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3902/14985871946_86abb8c56f_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3894/15008518202_b016d7d289_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3894/15008518202_b016d7d289_m.jpg',
-          alt: 'picture1',
-          title: 'Image Caption 1',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://farm4.staticflickr.com/3920/15008465772_383e697089_b.jpg',
-          msrc: 'https://farm4.staticflickr.com/3920/15008465772_383e697089_m.jpg',
-          alt: 'picture2',
-          title: 'Image Caption 2',
-          w: 1200,
-          h: 900
-        }
-      ],
+      slides: [],
       listQuery: {
-        classify: 'default'
+        tags: 'default'
+      },
+      myBackToTopStyle: {
+        right: '50px',
+        bottom: '50px',
+        width: '40px',
+        height: '40px',
+        'border-radius': '4px',
+        'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
+        background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
       }
     }
   },
@@ -124,9 +54,9 @@ export default {
       console.log('close event')
     },
     getPic () {
-      fetchPic(this.listQuery.classify).then(response => {
+      fetchPic(this.listQuery.tags).then(response => {
         console.log(response.data)
-        this.swiperSlides = response.data
+        this.slides = response.data
       })
     }
   },

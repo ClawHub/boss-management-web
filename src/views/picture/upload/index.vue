@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-     <el-row :gutter="20" style="margin-top:20px;">
-      <el-col :span="12">
+     <el-row :gutter="30" style="margin-top:10px;">
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="margin-bottom:30px;">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>上传图片</span>
@@ -17,29 +17,33 @@
               accept="image/jpeg,image/png" 
               size="1" 
               :removable="true"
+              :autoToggleAspectRatio="true"
+              :toggleAspectRatio="true"
+              :crop="false"
               :custom-strings="{
                 upload: '<h1>Bummer!</h1>',
                 drag: 'Drag a 😺 GIF or GTFO'
               }"
-              @change="onChange">
+              @change="onChange"
+              @remove="clearForm">
             </picture-input>
           </div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="margin-bottom:30px;">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>详情</span>
           </div>
           <div class="component-item">
-             <el-form ref="form" :model="form" label-width="100px">
+             <el-form ref="form" :model="form" label-width="20%">
               <el-form-item label="title">
                 <el-input v-model="form.title"></el-input>
               </el-form-item>
               <el-form-item label="alt">
                 <el-input v-model="form.alt"></el-input>
               </el-form-item>
-               <el-form-item label="classify">
+               <el-form-item label="tags">
                   <el-tag
                     :key="tag"
                     v-for="tag in dynamicTags"
@@ -67,6 +71,9 @@
             </el-form>
           </div>
         </el-card>
+        <el-card class="box-card">
+          <el-button style="width: 100%;" class="pan-btn green-btn" @click="refreshPicBed">刷新图床</el-button>
+        </el-card>
       </el-col>
     </el-row>
     
@@ -75,7 +82,7 @@
 
 <script>
 import PictureInput from 'vue-picture-input'
-import { upload } from '@/api/picBed'
+import { upload, rereshPicBed } from '@/api/picBed'
 export default {
   name: 'Upload',
   data () {
@@ -87,7 +94,7 @@ export default {
         image: '',
         title: '',
         alt: 'this is bad pic!',
-        classify: ''
+        tags: ''
       }
     }
   },
@@ -95,18 +102,16 @@ export default {
     PictureInput
   },
   methods: {
-    handleClose(tag) {
+    handleClose (tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
     },
-
-    showInput() {
+    showInput () {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-
-    handleInputConfirm() {
+    handleInputConfirm () {
       let inputValue = this.inputValue;
       if (inputValue) {
         this.dynamicTags.push(inputValue);
@@ -118,11 +123,11 @@ export default {
       this.form.image = ''
       this.form.title = ''
       this.form.alt = 'this is bad pic!'
-      this.form.classify = ''
+      this.form.tags = ''
     },
     onSubmit () {
-       console.log('onSubmit')
-       this.form.classify = this.dynamicTags.toString()
+      console.log('onSubmit')
+      this.form.tags = this.dynamicTags.toString()
       upload(this.form).then(response => {
         console.log(response.data)
         this.clearForm()
@@ -132,31 +137,37 @@ export default {
       console.log('New picture selected!')
       if (this.$refs.pictureInput.image) {
         console.log('Picture loaded.')
-        this.form.image = this.$refs.pictureInput.image
+        this.form.image = this.$refs.pictureInput.image.split(',')[1]
         this.form.title = this.$refs.pictureInput.file.name
         console.log(this.$refs.pictureInput.file)
         console.log(this.$refs.pictureInput.image)
+        console.log(this.$refs.pictureInput.image.split(',')[1])
       } else {
         console.log('FileReader API not supported: use the <form>, Luke!')
       }
+    },
+    refreshPicBed () {
+      rereshPicBed().then(response => {
+        console.log(response.data)
+      })
     }
   }
 }
 </script>
 <style>
-  .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 </style>
