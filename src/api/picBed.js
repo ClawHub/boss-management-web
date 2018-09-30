@@ -7,9 +7,9 @@ export function fetchPic (tags) {
   })
 }
 
-export function rereshPicBed () {
+export function refreshPicBed () {
   return request({
-    url: '/picBed/rereshPicBed/',
+    url: '/picBed/refreshPicBed/',
     method: 'get'
   })
 }

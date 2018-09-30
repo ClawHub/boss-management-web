@@ -84,7 +84,7 @@ export const constantRouterMap = [
         path: 'blog',
         component: () => import('@/views/blog/index'),
         name: 'Blog',
-        meta: { title: 'blog', icon: 'blog', noCache: true }
+        meta: { title: 'blog', icon: 'blog', noCache: false }
       }
     ]
   },
@@ -95,7 +95,7 @@ export const constantRouterMap = [
     name: 'picture',
     meta: {
       title: 'picture',
-      icon: 'picture', 
+      icon: 'picture',
       noCache: true
     },
     children: [

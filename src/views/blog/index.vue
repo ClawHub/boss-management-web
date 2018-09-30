@@ -3,19 +3,24 @@
    
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
       <sticky :class-name="'sub-navbar '+postForm.status">
-        <el-button v-loading="loading" style="margin-left: 10px;width: 100%;" type="success" @click="submitForm">发布</el-button>
+        <el-button v-loading="loading" style="margin-left: 10px;width: 88%;" type="success" @click="submitForm">发布</el-button>
+        <el-button v-loading="loadingRefresh" style="margin-left: 10px;width: 10%;" type="primary" @click="refreshBlog">刷新blog</el-button>
       </sticky>
       <el-row :gutter="8">
         <el-col :span="12">
           <el-form-item style="margin-bottom: 40px;" prop="title">
             <MDinput v-model="postForm.title" :maxlength="100" name="name" required>标题</MDinput>
           </el-form-item>
+          <el-form-item  label-width="10%" label="副标题:">
+            <el-input :rows="1" v-model="postForm.subtitle"  placeholder="请输入内容"/>
+            <span v-show="contentShortLength" class="word-counter">{{ contentShortLength }}字</span>
+          </el-form-item>
           <el-row>
             <el-col :span="8">
               <el-form-item label-width="45px" label="作者:" class="postInfo-container-item">
                 <el-autocomplete
                     class="inline-input"
-                    v-model="state1"
+                    v-model="postForm.author"
                     :fetch-suggestions="querySearch"
                     placeholder="请输入内容"
                     @select="handleSelect">
@@ -24,14 +29,14 @@
             </el-col>
             <el-col :span="10">
               <el-form-item label-width="80px" label="发布时间:" class="postInfo-container-item">
-                <el-date-picker v-model="postForm.display_time" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"/>
+                <el-date-picker v-model="postForm.displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"/>
               </el-form-item>
             </el-col>
           </el-row>
            <el-form-item label="tags">
               <el-tag
                 :key="tag"
-                v-for="tag in dynamicTags"
+                v-for="tag in postForm.tags"
                 closable
                 :disable-transitions="false"
                 @close="handleClose(tag)">
@@ -52,25 +57,17 @@
         </el-col>
         <el-col :span="12">
           <el-card>
-            <img style="margin-bottom: 20px;" src="http://images2015.cnblogs.com/blog/561794/201603/561794-20160310002800647-50077395.jpg" width="100%"/>
+            <img style="margin-bottom: 20px;" :src="postForm.headerImg" width="100%"/>
             <el-input
               placeholder="请输入内容"
-              v-model="input10"
+              v-model="postForm.headerImg"
               clearable>
             </el-input>
           </el-card>
         </el-col>
       </el-row>
-      <el-row :gutter="8">
-        <el-form-item style="margin-bottom: 40px; margin-top:10px;" label-width="45px" label="摘要:">
-          <el-input :rows="1" v-model="postForm.content_short" type="textarea" class="article-textarea" autosize placeholder="请输入内容"/>
-          <span v-show="contentShortLength" class="word-counter">{{ contentShortLength }}字</span>
-        </el-form-item>
-      </el-row>
       <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <markdown-editor id="contentEditor" ref="contentEditor" v-model="content" :height="300" :z-index="20"/>
-        <el-button style="margin-top:80px;" type="primary" icon="el-icon-document" @click="markdown2Html">To HTML</el-button>
-        <div v-html="html"/>
+        <markdown-editor id="contentEditor" ref="contentEditor" v-model="postForm.content" :height="300" :z-index="20"/>
       </el-row>
     </el-form>
   </div>   
@@ -80,33 +77,24 @@
 import MarkdownEditor from '@/components/MarkdownEditor'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
-const content = `
-**this is test**
+import { parseTime } from '@/utils'
+import { refreshBlog, submit } from '@/api/blog'
 
-* vue
-* element
-* webpack
-
-## Simplemde
-`
 const defaultForm = {
   status: 'draft',
   title: '', // 文章题目
-  content: '', // 文章内容
-  content_short: '', // 文章摘要
-  source_uri: '', // 文章外链
-  image_uri: '', // 文章图片
-  display_time: undefined, // 前台展示时间
-  id: undefined,
-  platforms: ['a-platform'],
-  comment_disabled: false,
-  importance: 0
+  author: '',//作者
+  displayTime: undefined, // 前台展示时间
+  tags: ['default'],
+  headerImg: '', // 文章图片
+  subtitle: '', // 文章摘要
+  content: '' // 文章内容
 }
 
 export default {
   name: 'Blog',
   components: { MarkdownEditor, MDinput, Sticky },
-  data() {
+  data () {
     const validateRequire = (rule, value, callback) => {
       if (value === '') {
         this.$message({
@@ -119,16 +107,12 @@ export default {
       }
     }
     return {
-      dynamicTags: ['default'],
       inputVisible: false,
       inputValue: '',
-      input10: '',
-      state1: '',
       restaurants: [],
       postForm: Object.assign({}, defaultForm),
       loading: false,
-      content: content,
-      html: '',
+      loadingRefresh: false,
       rules: {
         title: [{ validator: validateRequire }]
       }
@@ -136,7 +120,7 @@ export default {
   },
   methods: {
     handleClose (tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      this.postForm.tags.splice(this.postForm.tags.indexOf(tag), 1);
     },
     showInput () {
       this.inputVisible = true;
@@ -147,80 +131,77 @@ export default {
     handleInputConfirm () {
       let inputValue = this.inputValue;
       if (inputValue) {
-        this.dynamicTags.push(inputValue);
+        this.postForm.tags.push(inputValue);
       }
       this.inputVisible = false;
       this.inputValue = '';
     },
-    querySearch(queryString, cb) {
+    querySearch (queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
-    createFilter(queryString) {
+    createFilter (queryString) {
       return (restaurant) => {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
-    handleSelect(item) {
+    handleSelect (item) {
       console.log(item);
     },
-    markdown2Html() {
-      import('showdown').then(showdown => {
-        const converter = new showdown.Converter()
-        this.html = converter.makeHtml(this.content)
+    refreshBlog () {
+      refreshBlog().then(response => {
+        console.log(response.data)
+        this.$notify({
+          title: '成功',
+          message: response.data,
+          type: 'success',
+          duration: 2000
+        })
+        this.loadingRefresh = false
       })
+
     },
-    submitForm() {
-      this.postForm.display_time = parseInt(this.display_time / 1000)
-      console.log(this.postForm)
+    submitForm () {
+      this.postForm.displayTime = parseTime(this.postForm.displayTime)
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$notify({
-            title: '成功',
-            message: '发布文章成功',
-            type: 'success',
-            duration: 2000
+          submit(this.postForm).then(response => {
+            console.log(response.data)
+            this.$notify({
+              title: '成功',
+              message: '发布文章成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.postForm.status = 'published'
+            this.loading = false
           })
-          this.postForm.status = 'published'
-          this.loading = false
+
         } else {
           console.log('error submit!!')
           return false
         }
       })
     },
-    loadAll() {
+    loadAll () {
       return [
         { "value": "ClawHub" },
-        { "value": "Li Zhiming"}
+        { "value": "Li Zhiming" }
       ];
     },
   },
-  mounted() {
+  mounted () {
     this.restaurants = this.loadAll();
   },
   computed: {
-    contentShortLength() {
-      return this.postForm.content_short.length
+    contentShortLength () {
+      return this.postForm.subtitle.length
     }
   },
 }
 </script>
- <style scoped>
-.column{
-        max-width: 1024px;
- }
- .figure {
-         padding-top:30.85%; /* 316 / 1024 */
-         background: url("http://images2015.cnblogs.com/blog/561794/201603/561794-20160310002800647-50077395.jpg") no-repeat;
-          background-size:cover;
-          background-position:center;
-    }
-
-
-</style>
 
 

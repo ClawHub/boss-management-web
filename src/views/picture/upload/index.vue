@@ -82,7 +82,7 @@
 
 <script>
 import PictureInput from 'vue-picture-input'
-import { upload, rereshPicBed } from '@/api/picBed'
+import { upload, refreshPicBed } from '@/api/picBed'
 export default {
   name: 'Upload',
   data () {
@@ -147,7 +147,7 @@ export default {
       }
     },
     refreshPicBed () {
-      rereshPicBed().then(response => {
+      refreshPicBed().then(response => {
         console.log(response.data)
       })
     }
