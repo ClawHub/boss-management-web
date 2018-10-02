@@ -1,6 +1,14 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    blog: 'Blog',
+    picture: 'Pic Bed',
+    upload: 'Upload Pic',
+    list: 'View Pic',
+    auth: 'Auth',
+    resource: 'Resource',
+    role: 'Role',
+    user: 'User',
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -67,6 +75,7 @@ export default {
     logOut: 'Log Out',
     dashboard: 'Dashboard',
     github: 'Github',
+    blog: 'My Blog',
     screenfull: 'Screenfull',
     theme: 'Theme',
     size: 'Global Size'

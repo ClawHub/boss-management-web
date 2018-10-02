@@ -8,7 +8,7 @@ const authRouter = {
   redirect: '/auth/resource',
   name: 'Auth',
   meta: {
-    title: 'Auth',
+    title: 'auth',
     icon: 'auth'
   },
   children: [

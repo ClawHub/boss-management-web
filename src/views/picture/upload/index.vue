@@ -65,14 +65,14 @@
                   <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">立即上传</el-button>
+                <el-button v-loading="loadingSubmit" type="primary" @click="onSubmit">立即上传</el-button>
                 <el-button @click="clearForm">取消</el-button>
               </el-form-item>
             </el-form>
           </div>
         </el-card>
         <el-card class="box-card">
-          <el-button style="width: 100%;" class="pan-btn green-btn" @click="refreshPicBed">刷新图床</el-button>
+          <el-button v-loading="loadingRefresh" style="width: 100%;" class="pan-btn green-btn" @click="refreshPicBed">刷新图床</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -90,6 +90,8 @@ export default {
       dynamicTags: ['default'],
       inputVisible: false,
       inputValue: '',
+      loadingSubmit: false,
+      loadingRefresh: false,
       form: {
         image: '',
         title: '',
@@ -127,10 +129,12 @@ export default {
     },
     onSubmit () {
       console.log('onSubmit')
+      this.loadingSubmit = true
       this.form.tags = this.dynamicTags.toString()
       upload(this.form).then(response => {
         console.log(response.data)
         this.clearForm()
+        this.loadingSubmit = false
       })
     },
     onChange () {
@@ -147,8 +151,10 @@ export default {
       }
     },
     refreshPicBed () {
+      this.loadingRefresh = true
       refreshPicBed().then(response => {
         console.log(response.data)
+         this.loadingRefresh = false
       })
     }
   }

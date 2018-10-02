@@ -1,6 +1,14 @@
 export default {
   route: {
     dashboard: '首页',
+    blog: '博客',
+    picture: '图床',
+    upload: '图片上传',
+    list: '图片预览',
+    auth: '权限管理',
+    resource: '资源管理',
+    role: '角色管理',
+    user: '用户管理',
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
@@ -66,7 +74,8 @@ export default {
   navbar: {
     logOut: '退出登录',
     dashboard: '首页',
-    github: '项目地址',
+    github: 'Github',
+    blog: '博客',
     screenfull: '全屏',
     theme: '换肤',
     size: '布局大小'

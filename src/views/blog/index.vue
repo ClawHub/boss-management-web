@@ -151,6 +151,7 @@ export default {
       console.log(item);
     },
     refreshBlog () {
+      this.loadingRefresh = true
       refreshBlog().then(response => {
         console.log(response.data)
         this.$notify({
